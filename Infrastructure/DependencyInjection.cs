@@ -5,22 +5,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure;
-
-public static class DependencyInjection
+namespace Infrastructure
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services,
-        IConfiguration configuration)
+    public static class DependencyInjection
     {
-        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-
-        services.AddDbContext<ApplicationDbContext>(options =>
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-        });
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        return services;
+                if (configuration["UseInMemoryDatabase"] == "true")
+                    options.UseInMemoryDatabase("testDb");
+                else
+                    options.UseSqlServer(connectionString);
+            });
+
+            return services;
+        }
     }
 }

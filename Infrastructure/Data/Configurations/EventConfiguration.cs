@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class EvenConfiguration : IEntityTypeConfiguration<Event>
+public class EventConfiguration : IEntityTypeConfiguration<Event>
 {
     public void Configure(EntityTypeBuilder<Event> builder)
     {
@@ -24,12 +24,14 @@ public class EvenConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.EndDate)
             .IsRequired();
 
+        // ---
+
         builder.HasOne(e => e.EventCategory)
-            .WithMany()
+            .WithMany(ev => ev.Events)
             .HasForeignKey(e => e.EventCategoryId);
 
         builder.HasOne(e => e.Location)
-            .WithMany()
+            .WithMany(l => l.Events)
             .HasForeignKey(e => e.LocationId);
     }
 }

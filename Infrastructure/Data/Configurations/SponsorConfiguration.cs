@@ -16,5 +16,9 @@ public class SponsorConfiguration : IEntityTypeConfiguration<Sponsor>
 
         builder.Property(e => e.Description)
             .HasMaxLength(255);
+
+        // ---
+
+        builder.HasOne(c => c.ContactInformation);
     }
 }

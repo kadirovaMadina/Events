@@ -12,12 +12,14 @@ public class EventSpeakerConfiguration : IEntityTypeConfiguration<EventSpeaker>
 
         builder.HasKey(e => new { e.EventId, e.SpeakerId });
 
+        // ---
+
         builder.HasOne(e => e.Event)
-            .WithMany(e => e.EventSpeakers)
+            .WithMany(es => es.EventSpeakers)
             .HasForeignKey(e => e.EventId);
 
         builder.HasOne(e => e.Speaker)
-            .WithMany()
+            .WithMany(es => es.EventSpeakers)
             .HasForeignKey(e => e.SpeakerId);
     }
 }

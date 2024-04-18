@@ -12,4 +12,10 @@ public class Participant : BaseEntity
     public required string Email { get; set; }
     public required string Phone { get; set; }
     public bool IsActive { get; set; }
+
+    public Guid ContactInformationId { get; set; }
+    public ContactInformation? ContactInformation { get; set; }
+
+    public virtual ICollection<EventRegistration>? EventRegistrations { get; set; }
+    public virtual ICollection<Feedback>? Feedbacks { get; set; }
 }

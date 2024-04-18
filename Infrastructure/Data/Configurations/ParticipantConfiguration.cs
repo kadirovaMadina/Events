@@ -37,5 +37,9 @@ public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
 
         builder.Property(e => e.IsActive)
             .IsRequired();
+
+        // ---
+
+        builder.HasOne(c => c.ContactInformation);
     }
 }

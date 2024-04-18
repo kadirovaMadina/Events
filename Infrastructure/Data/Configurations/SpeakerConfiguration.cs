@@ -23,5 +23,14 @@ public class SpeakerConfiguration : IEntityTypeConfiguration<Speaker>
 
         builder.Property(e => e.IsActive)
             .IsRequired();
+
+        builder.HasOne(e => e.ContactInformation)
+            .WithMany()
+            .HasForeignKey(e => e.ContactInformationId);
+
+        builder.HasOne(e => e.Organizer)
+            .WithMany(o => o.Speakers)
+            .HasForeignKey(e => e.OrganizerId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

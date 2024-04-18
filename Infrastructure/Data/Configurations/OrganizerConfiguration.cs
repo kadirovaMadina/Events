@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Common.BaseEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,5 +20,9 @@ public class OrganizerConfiguration : IEntityTypeConfiguration<Organizer>
 
         builder.Property(e => e.Description)
             .HasMaxLength(255);
+
+        // ---
+
+        builder.HasOne(c => c.ContactInformation);
     }
 }

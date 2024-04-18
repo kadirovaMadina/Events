@@ -1,11 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Domain.Entities;
+using Domain.Common.BaseEntities;
 
 namespace Infrastructure.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+    }
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        base.OnModelCreating(modelBuilder);
+    }
+
+
+
     public DbSet<Event> Events { get; set; } = null!;
     public DbSet<EventCategory> EventCategories { get; set; } = null!;
     public DbSet<EventRegistration> EventRegistrations { get; set; } = null!;
@@ -17,11 +32,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Participant> Participants { get; set; } = null!;
     public DbSet<Speaker> Speakers { get; set; } = null!;
     public DbSet<Sponsor> Sponsors { get; set; } = null!;
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-        base.OnModelCreating(modelBuilder);
-    }
+    public DbSet<ContactInformation> ContactInformations { get; set; } = null!;
 }

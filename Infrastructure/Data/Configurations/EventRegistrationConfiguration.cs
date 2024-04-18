@@ -22,12 +22,14 @@ public class EventRegistrationConfiguration : IEntityTypeConfiguration<EventRegi
         builder.Property(e => e.RegistrationDate)
             .IsRequired();
 
+        // ---
+
         builder.HasOne(e => e.Event)
-            .WithMany()
+            .WithMany(er => er.EventRegistrations)
             .HasForeignKey(e => e.EventId);
 
         builder.HasOne(e => e.Participant)
-            .WithMany()
+            .WithMany(er => er.EventRegistrations)
             .HasForeignKey(e => e.ParticipantId);
     }
 }

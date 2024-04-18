@@ -14,10 +14,16 @@ public class FeedbackConfiguration : IEntityTypeConfiguration<Feedback>
             .IsRequired();
 
         builder.Property(e => e.Comment)
-            .HasMaxLength(255);
+            .HasMaxLength(255);              
 
+        // ---
+        
         builder.HasOne(e => e.Event)
-            .WithMany(y => y.Feedbacks)
-            .HasForeignKey(z => z.EventId);
+            .WithMany(f => f.Feedbacks)
+            .HasForeignKey(e => e.EventId);
+
+        builder.HasOne(p => p.Participant)
+            .WithMany(f => f.Feedbacks)
+            .HasForeignKey(p => p.ParticipantId);
     }
 }

@@ -1,13 +1,21 @@
 ﻿using Application.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data;
-
-public class ApplicationDbInitializer(ApplicationDbContext context) : IApplicationDbInitializer
+namespace Infrastructure.Data
 {
-    public void Initialize()
+    public class ApplicationDbInitializer : IApplicationDbInitializer
     {
-        if (context.Database.IsRelational())
-            context.Database.Migrate();
+        private readonly ApplicationDbContext _context;
+
+        public ApplicationDbInitializer(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public void Initialize()
+        {
+            if (_context.Database.IsRelational())
+                _context.Database.Migrate();
+        }
     }
 }

@@ -16,5 +16,8 @@ public class EventCategoryConfiguration : IEntityTypeConfiguration<EventCategory
 
         builder.Property(e => e.Description)
             .HasMaxLength(255);
+
+        // ---
+
     }
 }

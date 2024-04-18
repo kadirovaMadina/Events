@@ -21,5 +21,7 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
         builder.Property(e => e.Longitude)
             .HasMaxLength(20)
             .IsRequired();
+
+        // ---
     }
 }
