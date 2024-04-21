@@ -16,6 +16,7 @@ public class Event : BaseEntity
 
     public virtual ICollection<EventRegistration>? EventRegistrations { get; set; }
     public virtual ICollection<EventSponsor>? EventSponsors { get; set; }
+    public virtual ICollection<EventOrganizer>? EventOrganizers { get; set; }
     public virtual ICollection<EventSpeaker>? EventSpeakers { get; set; }
     public virtual ICollection<Participant>? Participants { get; set; }
     public virtual ICollection<Feedback>? Feedbacks { get; set; }

@@ -11,6 +11,6 @@ public class Organizer : BaseEntity
     public Guid ContactInformationId { get; set; }
     public ContactInformation? ContactInformation { get; set; }
 
-    public virtual ICollection<Speaker> Speakers { get; set; }
+    public virtual ICollection<EventOrganizer>? EventOrganizers { get; set; }
     
 }

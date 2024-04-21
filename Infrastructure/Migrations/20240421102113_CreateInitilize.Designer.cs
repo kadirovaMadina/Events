@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240418093252_CreateInitilize")]
+    [Migration("20240421102113_CreateInitilize")]
     partial class CreateInitilize
     {
         /// <inheritdoc />
@@ -129,6 +129,33 @@ namespace Infrastructure.Migrations
                     b.ToTable("EventCategories");
                 });
 
+            modelBuilder.Entity("Domain.Entities.EventOrganizer", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("EventId", "OrganizerId");
+
+                    b.HasIndex("OrganizerId");
+
+                    b.ToTable("EventOrganizer");
+                });
+
             modelBuilder.Entity("Domain.Entities.EventRegistration", b =>
                 {
                     b.Property<Guid>("Id")
@@ -146,6 +173,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateOnly>("RegistrationDate")
                         .HasColumnType("date");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedDateTime")
                         .HasColumnType("datetime2");
@@ -403,17 +433,12 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<Guid>("OrganizerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("UpdatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContactInformationId");
-
-                    b.HasIndex("OrganizerId");
 
                     b.ToTable("Speakers");
                 });
@@ -470,6 +495,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("EventCategory");
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventOrganizer", b =>
+                {
+                    b.HasOne("Domain.Entities.Event", "Event")
+                        .WithMany("EventOrganizers")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Organizer", "Organizer")
+                        .WithMany("EventOrganizers")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("Domain.Entities.EventRegistration", b =>
@@ -582,15 +626,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Organizer", "Organizer")
-                        .WithMany("Speakers")
-                        .HasForeignKey("OrganizerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ContactInformation");
-
-                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("Domain.Entities.Sponsor", b =>
@@ -617,6 +653,8 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
+                    b.Navigation("EventOrganizers");
+
                     b.Navigation("EventRegistrations");
 
                     b.Navigation("EventSpeakers");
@@ -640,7 +678,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Organizer", b =>
                 {
-                    b.Navigation("Speakers");
+                    b.Navigation("EventOrganizers");
                 });
 
             modelBuilder.Entity("Domain.Entities.Participant", b =>

@@ -86,6 +86,29 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Speakers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    ContactInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Speakers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Speakers_ContactInformations_ContactInformationId",
+                        column: x => x.ContactInformationId,
+                        principalTable: "ContactInformations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sponsors",
                 columns: table => new
                 {
@@ -140,31 +163,56 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Speakers",
+                name: "EventOrganizer",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ContactInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Speakers", x => x.Id);
+                    table.PrimaryKey("PK_EventOrganizer", x => new { x.EventId, x.OrganizerId });
                     table.ForeignKey(
-                        name: "FK_Speakers_ContactInformations_ContactInformationId",
-                        column: x => x.ContactInformationId,
-                        principalTable: "ContactInformations",
+                        name: "FK_EventOrganizer_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Speakers_Organizers_OrganizerId",
+                        name: "FK_EventOrganizer_Organizers_OrganizerId",
                         column: x => x.OrganizerId,
                         principalTable: "Organizers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventSpeakers",
+                columns: table => new
+                {
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SpeakerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventSpeakers", x => new { x.EventId, x.SpeakerId });
+                    table.ForeignKey(
+                        name: "FK_EventSpeakers_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventSpeakers_Speakers_SpeakerId",
+                        column: x => x.SpeakerId,
+                        principalTable: "Speakers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -232,38 +280,12 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventSpeakers",
-                columns: table => new
-                {
-                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SpeakerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventSpeakers", x => new { x.EventId, x.SpeakerId });
-                    table.ForeignKey(
-                        name: "FK_EventSpeakers_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventSpeakers_Speakers_SpeakerId",
-                        column: x => x.SpeakerId,
-                        principalTable: "Speakers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EventRegistrations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RegistrationDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ParticipantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -314,6 +336,11 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventOrganizer_OrganizerId",
+                table: "EventOrganizer",
+                column: "OrganizerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventRegistrations_EventId",
@@ -376,11 +403,6 @@ namespace Infrastructure.Migrations
                 column: "ContactInformationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Speakers_OrganizerId",
-                table: "Speakers",
-                column: "OrganizerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Sponsors_ContactInformationId",
                 table: "Sponsors",
                 column: "ContactInformationId");
@@ -389,6 +411,9 @@ namespace Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EventOrganizer");
+
             migrationBuilder.DropTable(
                 name: "EventRegistrations");
 
@@ -402,6 +427,9 @@ namespace Infrastructure.Migrations
                 name: "Feedbacks");
 
             migrationBuilder.DropTable(
+                name: "Organizers");
+
+            migrationBuilder.DropTable(
                 name: "Speakers");
 
             migrationBuilder.DropTable(
@@ -411,13 +439,10 @@ namespace Infrastructure.Migrations
                 name: "Participants");
 
             migrationBuilder.DropTable(
-                name: "Organizers");
+                name: "ContactInformations");
 
             migrationBuilder.DropTable(
                 name: "Events");
-
-            migrationBuilder.DropTable(
-                name: "ContactInformations");
 
             migrationBuilder.DropTable(
                 name: "EventCategories");

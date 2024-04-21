@@ -2,35 +2,31 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Data.Configurations;
-
-public class SpeakerConfiguration : IEntityTypeConfiguration<Speaker>
+namespace Infrastructure.Data.Configurations
 {
-    public void Configure(EntityTypeBuilder<Speaker> builder)
+    public class SpeakerConfiguration : IEntityTypeConfiguration<Speaker>
     {
-        builder.HasKey(e => e.Id);
+        public void Configure(EntityTypeBuilder<Speaker> builder)
+        {
+            builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd();
+            builder.Property(e => e.Id)
+                .ValueGeneratedOnAdd();
 
-        builder.Property(e => e.FirstName)
-            .IsRequired()
-            .HasMaxLength(20);
+            builder.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(20);
 
-        builder.Property(e => e.LastName)
-            .IsRequired()
-            .HasMaxLength(20);
+            builder.Property(e => e.LastName)
+                .IsRequired()
+                .HasMaxLength(20);
 
-        builder.Property(e => e.IsActive)
-            .IsRequired();
+            builder.Property(e => e.IsActive)
+                .IsRequired();
 
-        builder.HasOne(e => e.ContactInformation)
-            .WithMany()
-            .HasForeignKey(e => e.ContactInformationId);
+            // ---
 
-        builder.HasOne(e => e.Organizer)
-            .WithMany(o => o.Speakers)
-            .HasForeignKey(e => e.OrganizerId)
-            .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(e => e.ContactInformation);
+        }
     }
 }
