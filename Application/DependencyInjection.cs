@@ -10,6 +10,8 @@ namespace Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IBaseService<Event>, EventService>();
+            services.AddScoped<IBaseService<Location>, LocationService>();
+            services.AddScoped<IBaseService<EventCategory>, CategoryService>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             return services;
         }

@@ -9,5 +9,6 @@ namespace Application.Services
         Task<TEntity> CreateAsync(TEntity entity, CancellationToken token = default);
         Task<bool> UpdateAsync(TEntity entity, CancellationToken token = default);
         Task<bool> DeleteAsync(Guid id, CancellationToken token = default);
+        //Task GetAsync(int id);
     }
 }
