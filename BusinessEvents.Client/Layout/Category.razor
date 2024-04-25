@@ -1,0 +1,31 @@
+﻿@* @page "/Category"
+@using BusinessEvents.Client.Services
+@using Contracts.Responses
+
+<h3>Data from RESTful API</h3>
+
+@if (data != null)
+{
+    <ul>
+        @foreach (var item in data)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Loading data...</p>
+}
+
+@code {
+    private IEnumerable<SingleCategoryResponse> data;
+
+    [Inject]
+    private ApiService ApiService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        data = await ApiService.Get<SingleCategoryResponse>("Category/api/events");
+    }
+} *@

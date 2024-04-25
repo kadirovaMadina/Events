@@ -10,37 +10,37 @@ namespace Web.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CategoryController : Controller
+    public class SpeakerController : Controller
     {
-        private readonly IBaseService<EventCategory> _categoryService;
+        private readonly IBaseService<Speaker> _speakerService;
         private readonly IMapper _mapper;
 
-        public CategoryController(IBaseService<EventCategory> categoryService, IMapper mapper)
+        public SpeakerController(IBaseService<Speaker> speakerService, IMapper mapper)
         {
-            _categoryService = categoryService;
+            _speakerService = speakerService;
             _mapper = mapper;
         }
 
         [HttpPost(ApiEndpoints.EventMethod.Create)]
-        public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request, CancellationToken token)
+        public async Task<IActionResult> Create([FromBody] CreateSpeakerRequest request, CancellationToken token)
         {
-            var entity = _mapper.Map<EventCategory>(request);
+            var entity = _mapper.Map<Speaker>(request);
 
-            var response = await _categoryService.CreateAsync(entity, token);
+            var response = await _speakerService.CreateAsync(entity, token);
             return CreatedAtAction(nameof(Create), new { id = response.Id }, response);
         }
 
         [HttpGet(ApiEndpoints.EventMethod.Get)]
         public async Task<IActionResult> Get(Guid id, CancellationToken token)
         {
-            var entityExist = await _categoryService.GetAsync(id);
+            var entityExist = await _speakerService.GetAsync(id);
 
             if (entityExist == null)
             {
                 return NotFound();
             }
 
-            var response = _mapper.Map<SingleCategoryResponse>(entityExist);
+            var response = _mapper.Map<SingleSpeakerResponse>(entityExist);
 
             return response == null ? NotFound() : Ok(response);
         }
@@ -48,29 +48,29 @@ namespace Web.API.Controllers
         [HttpGet(ApiEndpoints.EventMethod.GetAll)]
         public async Task<IActionResult> GetAll(CancellationToken token)
         {
-            var entity = await _categoryService.GetAllAsync(token);
+            var entity = await _speakerService.GetAllAsync(token);
 
-            var response = new GetAllCategoriesResponse()
+            var response = new GetAllSpeakersResponse()
             {
-                Items = _mapper.Map<IEnumerable<SingleCategoryResponse>>(entity)
+                Items = _mapper.Map<IEnumerable<SingleSpeakerResponse>>(entity)
             };
 
             return Ok(response);
         }
 
         [HttpPut(ApiEndpoints.EventMethod.Update)]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCategoryRequest request, CancellationToken token)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateSpeakerRequest request, CancellationToken token)
         {
             if (request == null)
             {
                 return BadRequest("Invalid request data.");
             }
 
-            EventCategory entity = _mapper.Map<EventCategory>(request);
+            Speaker entity = _mapper.Map<Speaker>(request);
 
-            await _categoryService.UpdateAsync(entity, token);
+            await _speakerService.UpdateAsync(entity, token);
 
-            var response = _mapper.Map<SingleCategoryResponse>(entity);
+            var response = _mapper.Map<SingleSpeakerResponse>(entity);
 
             return response == null ? NotFound() : Ok(response);
         }
@@ -78,9 +78,9 @@ namespace Web.API.Controllers
         [HttpDelete(ApiEndpoints.EventMethod.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
         {
-            var response = await _categoryService.DeleteAsync(id, token);
+            var response = await _speakerService.DeleteAsync(id, token);
 
-            return response ? Ok() : NotFound($"Category with ID {id} not found.");
+            return response ? Ok() : NotFound($"Speaker with ID {id} not found.");
         }
     }
 }

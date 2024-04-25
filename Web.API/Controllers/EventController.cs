@@ -3,6 +3,7 @@ using AutoMapper;
 using Contracts.Requests;
 using Contracts.Responses;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.API;
 
@@ -21,6 +22,7 @@ namespace Web.API.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpPost(ApiEndpoints.EventMethod.Create)]
         public async Task<IActionResult> Create([FromBody] CreateEventRequest request, CancellationToken token)
         {
@@ -30,6 +32,7 @@ namespace Web.API.Controllers
             return CreatedAtAction(nameof(Create), new { id = response.Id }, response);
         }
 
+        [Authorize]
         [HttpGet(ApiEndpoints.EventMethod.Get)]
         public async Task<IActionResult> Get(Guid id, CancellationToken token)
         {

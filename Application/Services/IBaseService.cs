@@ -1,6 +1,4 @@
-﻿
-
-namespace Application.Services
+﻿namespace Application.Services
 {
     public interface IBaseService<TEntity> where TEntity : class
     {
